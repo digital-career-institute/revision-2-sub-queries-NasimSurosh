@@ -1,0 +1,29 @@
+
+select * from orders where order_date = (select max(order_date) from orders);
+
+select product_name, unit_price from products where unit_price > (select unit_price from products where 
+																 product_name = 'Carnarvon Tigers');
+																 
+																 
+select customer_id, contact_name from customers where customer_id 
+in (select customer_id from orders where ship_country ='Brazil');	
+
+
+--select customer_id from orders left join order_details on order_details.order_id = orders.order_id 
+--where order_details.order_id = (select product_id from products where product_name = 'Tofu') 
+--group by orders.order_id having sum(quantity) > 20;
+
+select o.customer_id from orders o
+where 20 <
+(select od.quantity from order_details od
+where od.order_id = o.order_id
+and od.product_id = (select p.product_id from products p where p.product_name = 'Tofu'))
+
+
+select p.product_name, od.discount, o.shipped_date from orders o
+join order_details od on o.order_id = od.order_id join products p on od.product_id = p.product_id
+join categories c on c.category_id = p.category_id where od.discount > 0;
+
+
+select * from orders where customer_id in (select customer_id from customers where city = 'London')
+and ship_via = (select shipper_id from shippers where company_name = 'United Package');
